@@ -5,19 +5,18 @@
 int main() {
     Grid grid(10, 20);
 
-    // add some walls
-    for (int i = 5; i < 15; i++) {
-        grid.setWall(4, i);
+    for (int i = 4; i < 15; i++) {
+        grid.setWall(5, i);
     }
 
-    std::cout << "BFS Traversal:\n";
-    runBFS(grid);
+    std::cout << "Dijkstra:\n";
+    runDijkstra(grid);
     grid.print();
 
     grid.resetVisited();
 
-    std::cout << "\nDFS Traversal:\n";
-    runDFS(grid);
+    std::cout << "\nA* Search:\n";
+    runAStar(grid);
     grid.print();
 
     return 0;
