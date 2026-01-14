@@ -54,6 +54,8 @@ void Grid::print() const {
         for (const auto& cell : row) {
             if (cell.isWall)
                 std::cout << "# ";
+            else if (cell.parent && cell.visited)
+                std::cout << "* ";
             else if (cell.visited)
                 std::cout << ". ";
             else
@@ -62,6 +64,7 @@ void Grid::print() const {
         std::cout << "\n";
     }
 }
+
 
 int Grid::getRows() const { return rows; }
 int Grid::getCols() const { return cols; }
