@@ -5,5 +5,7 @@
 
 void runBFS(Grid& grid);
 void runDFS(Grid& grid);
+void runDijkstra(Grid& grid);
+void runAStar(Grid& grid);
 
 #endif

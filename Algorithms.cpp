@@ -1,67 +1,97 @@
 #include "Algorithms.h"
 #include <queue>
 #include <stack>
+#include <cmath>
 
-void runBFS(Grid& grid) {
-    std::queue<Cell*> q;
+struct Node {
+    Cell* cell;
+    int cost;
 
-    auto start = grid.getStart();
-    Cell& startCell = grid.getCell(start.first, start.second);
+    bool operator>(const Node& other) const {
+        return cost > other.cost;
+    }
+};
 
-    startCell.visited = true;
-    q.push(&startCell);
+static int manhattan(Cell* a, Cell* b) {
+    return abs(a->row - b->row) + abs(a->col - b->col);
+}
+
+void runDijkstra(Grid& grid) {
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> pq;
+
+    Cell& start = grid.getCell(0, 0);
+    Cell& end = grid.getCell(grid.getRows() - 1, grid.getCols() - 1);
+
+    start.distance = 0;
+    pq.push({ &start, 0 });
 
     int dirs[4][2] = { {1,0},{-1,0},{0,1},{0,-1} };
 
-    while (!q.empty()) {
-        Cell* curr = q.front();
-        q.pop();
+    while (!pq.empty()) {
+        Cell* curr = pq.top().cell;
+        pq.pop();
+
+        if (curr->visited) continue;
+        curr->visited = true;
+
+        if (curr == &end) break;
 
         for (auto& d : dirs) {
             int nr = curr->row + d[0];
             int nc = curr->col + d[1];
 
-            if (!grid.inBounds(nr, nc))
-                continue;
+            if (!grid.inBounds(nr, nc)) continue;
 
             Cell& next = grid.getCell(nr, nc);
-            if (next.visited || next.isWall)
-                continue;
+            if (next.isWall) continue;
 
-            next.visited = true;
-            q.push(&next);
+            int newDist = curr->distance + 1;
+            if (newDist < next.distance) {
+                next.distance = newDist;
+                next.parent = curr;
+                pq.push({ &next, newDist });
+            }
         }
     }
 }
 
-void runDFS(Grid& grid) {
-    std::stack<Cell*> st;
+void runAStar(Grid& grid) {
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> pq;
 
-    auto start = grid.getStart();
-    Cell& startCell = grid.getCell(start.first, start.second);
+    Cell& start = grid.getCell(0, 0);
+    Cell& end = grid.getCell(grid.getRows() - 1, grid.getCols() - 1);
 
-    startCell.visited = true;
-    st.push(&startCell);
+    start.distance = 0;
+    pq.push({ &start, manhattan(&start, &end) });
 
     int dirs[4][2] = { {1,0},{-1,0},{0,1},{0,-1} };
 
-    while (!st.empty()) {
-        Cell* curr = st.top();
-        st.pop();
+    while (!pq.empty()) {
+        Cell* curr = pq.top().cell;
+        pq.pop();
+
+        if (curr->visited) continue;
+        curr->visited = true;
+
+        if (curr == &end) break;
 
         for (auto& d : dirs) {
             int nr = curr->row + d[0];
             int nc = curr->col + d[1];
 
-            if (!grid.inBounds(nr, nc))
-                continue;
+            if (!grid.inBounds(nr, nc)) continue;
 
             Cell& next = grid.getCell(nr, nc);
-            if (next.visited || next.isWall)
-                continue;
+            if (next.isWall) continue;
 
-            next.visited = true;
-            st.push(&next);
+            int g = curr->distance + 1;
+            int h = manhattan(&next, &end);
+
+            if (g < next.distance) {
+                next.distance = g;
+                next.parent = curr;
+                pq.push({ &next, g + h });
+            }
         }
     }
 }
