@@ -21,7 +21,7 @@ void Grid::setStart(int r, int c) {
 }
 
 void Grid::setEnd(int r, int c) {
-    // nothing special for now
+    
 }
 
 bool Grid::inBounds(int r, int c) const {
