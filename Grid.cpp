@@ -44,10 +44,12 @@ void Grid::resetVisited() {
     for (auto& row : grid) {
         for (auto& cell : row) {
             cell.visited = false;
-            cell.distance = -1;
+            cell.distance = 1e9;
+            cell.parent = nullptr;
         }
     }
 }
+
 
 void Grid::print() const {
     for (const auto& row : grid) {
